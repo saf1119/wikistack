@@ -2,6 +2,7 @@ const express = require('express');
 const route = express.Router();
 const addPage = require('../views/addPage');
 const model = require('../models/index.js');
+const wikipage = require('../views/wikipage')
 
 
 route.get('/', (req, res, next) => {
@@ -18,13 +19,21 @@ route.post('/', async (req, res, next) => {
       // note: `.save` returns a promise.
       try {
         await page.save();
-        res.redirect('/');
+        console.log(page.slug)
+        res.redirect('/wiki/' + page.slug);
       } catch (error) { next(error) }
-      
+      //console.log(page)      
 });
 
 route.get('/add', (req, res, next) => {
     res.send(addPage())
+});
+
+route.get('/:slug', async (req, res, next) => {
+  const foundPage = await model.Pages.findOne({
+    where: {slug: req.params.slug}
+  });
+  res.send(wikipage(foundPage))
 });
 
 module.exports = route;
