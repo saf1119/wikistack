@@ -9,7 +9,7 @@ module.exports = () => layout(html`
   <div class="form-group">
   <label for="name" class="col-sm-2 control-label">Author Name</label>
   <div class="col-sm-10">
-    <input id="name" name="author name" type="text" class="form-control"/>
+    <input id="name" name="name" type="text" class="form-control"/>
   </div>
 </div>
     

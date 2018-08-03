@@ -17,15 +17,14 @@ route.post('/', async (req, res, next) => {
             title: req.body.title,
             content: req.body.content
         });
-
-        const [author, wasCreated] = await model.Users.findOrCreate({where: {name: req.params.name, email: req.params.email}});
-        page.setAuthor(author);
-        
-            await page.save();
-            console.log(page.slug)
-            res.redirect('/wiki/' + page.slug);
+        const [author, wasCreated] = await model.Users.findOrCreate({where: {name: req.body.name, email: req.body.email}});
+        console.log("HEEEEEEREEE",author)
+        page.setAuthor(author);       
+        await page.save();
+        await author.save();
+        console.log(page.slug)
+        res.redirect('/wiki/' + page.slug);
       } catch (error) { next(error) }
-      //console.log(page)      
 });
 
 route.get('/add', (req, res, next) => {
@@ -33,10 +32,15 @@ route.get('/add', (req, res, next) => {
 });
 
 route.get('/:slug', async (req, res, next) => {
+  try{
   const foundPage = await model.Pages.findOne({
     where: {slug: req.params.slug}
   });
-  res.send(wikipage(foundPage))
+  let author = await foundPage.getAuthor()
+  res.send(wikipage(foundPage, author))
+} catch(error) {
+  next(error)
+}
 });
 
 module.exports = route;
