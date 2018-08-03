@@ -11,6 +11,12 @@ module.exports = (pages) => layout(html`
   <hr>
   <ul class="list-unstyled">
     <ul>
-      <!-- PLACEHOLDER LIST OF PAGES -->
+    ${pages.map(page => html`
+    <div class='news-item'>
+      <p>
+        <a href="/wiki/${page.slug}">${page.title}</a>
+        <small>(by ${users.name})</small>
+      </p>
+    </div>`)}
     </ul>
   </ul>`);

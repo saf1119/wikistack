@@ -2,25 +2,28 @@ const express = require('express');
 const route = express.Router();
 const addPage = require('../views/addPage');
 const model = require('../models/index.js');
-const wikipage = require('../views/wikipage')
+const wikipage = require('../views/wikipage');
+const main = require('../views/main');
 
 
-route.get('/', (req, res, next) => {
-    res.send('Hello from route')
+route.get('/', async (req, res, next) => {
+    const pagesArr = await model.Pages.findAll();
+    res.send(main(pagesArr));
 });
 
 route.post('/', async (req, res, next) => {
-    const page = new model.Pages({
-        title: req.body.title,
-        content: req.body.content
-      });
-    
-      // make sure we only redirect *after* our save is complete!
-      // note: `.save` returns a promise.
-      try {
-        await page.save();
-        console.log(page.slug)
-        res.redirect('/wiki/' + page.slug);
+    try {
+        const page = new model.Pages({
+            title: req.body.title,
+            content: req.body.content
+        });
+
+        const [author, wasCreated] = await model.Users.findOrCreate({where: {name: req.params.name, email: req.params.email}});
+        page.setAuthor(author);
+        
+            await page.save();
+            console.log(page.slug)
+            res.redirect('/wiki/' + page.slug);
       } catch (error) { next(error) }
       //console.log(page)      
 });

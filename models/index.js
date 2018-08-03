@@ -33,6 +33,8 @@ const Users = db.define('users', {
 	}
 })
 
+Pages.belongsTo(Users, {as: 'author'});
+
 const pagesValidate = Pages.beforeValidate((pageInstance, optionsObject) => {
 function generateSlug (title) {
   // Removes all non-alphanumeric characters from title
