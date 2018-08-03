@@ -6,11 +6,12 @@ const models = require('./models');
 const wiki = require('./routes/wiki.js');
 const user = require('./routes/user.js');
 
-app.use('/wiki', wiki);
+
 //app.use('/user', user);
 app.use(morgan('dev'));
 app.use(express.static(__dirname + '/public'));
 app.use(express.urlencoded({extended: false}));
+app.use('/wiki', wiki);
 
 app.get("/", (req, res) => {
     res.redirect('/wiki');
